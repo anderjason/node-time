@@ -1,7 +1,4 @@
 import { Test } from "@anderjason/tests";
-import "./LocalDirectory/index.test";
-import "./LocalFile/index.test";
-import "./LocalPath/index.test";
 
 Test.runAll()
   .then(() => {
