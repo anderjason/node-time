@@ -4,9 +4,9 @@ exports.TimeZone = void 0;
 const timezone_support_1 = require("timezone-support");
 class TimeZone {
     constructor(ianaName) {
-        this._ianaName = ianaName;
+        this.ianaName = ianaName;
     }
-    static ofIanaName(ianaName) {
+    static givenIanaName(ianaName) {
         return new TimeZone(ianaName);
     }
     static ofUTC() {
@@ -17,9 +17,6 @@ class TimeZone {
     }
     static toIanaNames() {
         return timezone_support_1.listTimeZones();
-    }
-    toIanaName() {
-        return this._ianaName;
     }
 }
 exports.TimeZone = TimeZone;

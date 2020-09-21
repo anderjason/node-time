@@ -7,145 +7,90 @@ const time_2 = require("@anderjason/time");
 const instantOfLocalDateTime_1 = require("./_internal/instantOfLocalDateTime");
 const dayOfWeekOfInstant_1 = require("./_internal/dayOfWeekOfInstant");
 const AbstractDateTime_1 = require("../AbstractDateTime");
+const AbstractTime_1 = require("../AbstractTime");
 class LocalDateTime {
-    constructor(abstractDateTime, timeZone) {
-        this._abstractDateTime = abstractDateTime;
-        this._timeZone = timeZone;
+    constructor(props) {
+        this.abstractDateTime = props.abstractDateTime;
+        this.timeZone = props.timeZone;
     }
-    static ofDateParts(calendarYear, calendarMonth, calendarDay, timeZone) {
-        const abstractDateTime = AbstractDateTime_1.AbstractDateTime.givenDefinition({
-            calendarYear,
-            calendarMonth,
-            calendarDay,
-        });
-        return new LocalDateTime(abstractDateTime, timeZone);
+    static givenTimeToday(abstractTime, timeZone) {
+        const now = localDateTimeOfInstant_1.localDateTimeOfInstant(time_1.Instant.ofNow(), timeZone);
+        return now.withAbstractDateTime(now.abstractDateTime.withAbstractTime(abstractTime));
     }
-    static ofAbstractDateTime(abstractDateTime, timeZone) {
-        return new LocalDateTime(abstractDateTime, timeZone);
+    static ofTodayStart(timeZone) {
+        return LocalDateTime.givenTimeToday(AbstractTime_1.AbstractTime.ofDayStart(), timeZone);
     }
-    static ofToday(timeZone, hours24, minutes, seconds, milliseconds) {
-        return localDateTimeOfInstant_1.localDateTimeOfInstant(time_1.Instant.ofNow(), timeZone).withTimeParts(hours24, minutes, seconds, milliseconds);
+    static ofTodayEnd(timeZone) {
+        return LocalDateTime.givenTimeToday(AbstractTime_1.AbstractTime.ofDayEnd(), timeZone);
     }
-    static ofBeginningOfToday(timeZone) {
-        return LocalDateTime.ofToday(timeZone, 0, 0);
-    }
-    static ofBeginningOfThisWeek(timeZone) {
-        return LocalDateTime.ofToday(timeZone, 0, 0).withBeginningOfWeek();
+    static ofWeekStart(timeZone) {
+        return LocalDateTime.ofTodayStart(timeZone).withWeekStart();
     }
     static ofEndOfThisWeek(timeZone) {
-        return LocalDateTime.ofToday(timeZone, 0, 0).withEndOfWeek();
-    }
-    static ofEndOfToday(timeZone) {
-        return LocalDateTime.ofToday(timeZone, 23, 59, 59, 999);
-    }
-    static ofInstant(instant, timeZone) {
-        return localDateTimeOfInstant_1.localDateTimeOfInstant(instant, timeZone);
+        return LocalDateTime.ofTodayStart(timeZone).withWeekEnd();
     }
     static ofNow(timeZone) {
         return localDateTimeOfInstant_1.localDateTimeOfInstant(time_1.Instant.ofNow(), timeZone);
     }
-    withTimeParts(hours24, minutes, seconds = 0, milliseconds = 0) {
-        const abstractDateTime = this._abstractDateTime.withTimeParts(hours24, minutes, seconds, milliseconds);
-        return new LocalDateTime(abstractDateTime, this._timeZone);
+    static givenInstant(instant, timeZone) {
+        return localDateTimeOfInstant_1.localDateTimeOfInstant(instant, timeZone);
     }
-    withDateParts(calendarYear, calendarMonth, calendarDay) {
-        const abstractDateTime = this._abstractDateTime.withDateParts(calendarYear, calendarMonth, calendarDay);
-        return new LocalDateTime(abstractDateTime, this._timeZone);
+    withAbstractDateTime(abstractDateTime) {
+        return new LocalDateTime({
+            abstractDateTime,
+            timeZone: this.timeZone,
+        });
     }
-    withoutMilliseconds() {
-        const abstractDateTime = this._abstractDateTime.withoutMilliseconds();
-        return new LocalDateTime(abstractDateTime, this._timeZone);
+    withAbstractTime(abstractTime) {
+        return new LocalDateTime({
+            abstractDateTime: this.abstractDateTime.withAbstractTime(abstractTime),
+            timeZone: this.timeZone,
+        });
     }
-    withoutSeconds() {
-        const abstractDateTime = this._abstractDateTime.withoutSeconds();
-        return new LocalDateTime(abstractDateTime, this._timeZone);
+    withAbstractDate(abstractDate) {
+        return new LocalDateTime({
+            abstractDateTime: this.abstractDateTime.withAbstractDate(abstractDate),
+            timeZone: this.timeZone,
+        });
     }
     withAddedDuration(duration) {
-        return LocalDateTime.ofInstant(this.toInstant().withAddedDuration(duration), this._timeZone);
+        return LocalDateTime.givenInstant(this.toInstant().withAddedDuration(duration), this.timeZone);
     }
-    withBeginningOfDay() {
-        return this.withTimeParts(0, 0);
+    withDayStart() {
+        return new LocalDateTime({
+            timeZone: this.timeZone,
+            abstractDateTime: this.abstractDateTime.withAbstractTime(AbstractTime_1.AbstractTime.ofDayStart()),
+        });
     }
-    withEndOfDay() {
-        return this.withTimeParts(23, 59, 59, 999);
+    withDayEnd() {
+        return new LocalDateTime({
+            timeZone: this.timeZone,
+            abstractDateTime: this.abstractDateTime.withAbstractTime(AbstractTime_1.AbstractTime.ofDayEnd()),
+        });
     }
-    withBeginningOfWeek() {
-        const beginningOfDay = this.withBeginningOfDay();
-        return beginningOfDay.withAddedDuration(time_2.Duration.givenDays(0 - beginningOfDay.toDayOfWeek()));
+    withWeekStart() {
+        const beginningOfDay = this.withDayStart();
+        return beginningOfDay.withAddedDuration(time_2.Duration.givenDays(0 - this.toDayOfWeek()));
     }
-    withEndOfWeek() {
-        const endOfDay = this.withEndOfDay();
+    withWeekEnd() {
+        const endOfDay = this.withDayEnd();
         return endOfDay.withAddedDuration(time_2.Duration.givenDays(6 - endOfDay.toDayOfWeek()));
     }
-    withBeginningOfMonth() {
-        return this.withBeginningOfDay().withDateParts(this.toCalendarYear(), this.toCalendarMonth(), 1);
-    }
-    toSortableDateString(format) {
-        return this._abstractDateTime.toSortableDateString(format);
-    }
-    toSortableTimeString(format) {
-        return this._abstractDateTime.toSortableTimeString(format);
-    }
-    toSortableDateTimeString(format) {
-        let date;
-        let time;
-        switch (format) {
-            case "2019-12-31 23:59:59":
-                date = this.toSortableDateString("2019-12-31");
-                time = this.toSortableTimeString("23:59:59");
-                return `${date} ${time}`;
-            case "20191231 235959":
-                date = this.toSortableDateString("20191231");
-                time = this.toSortableTimeString("235959");
-                return `${date} ${time}`;
-            default:
-                throw new Error("Unsupported date time string format");
-        }
-    }
-    toWrittenDateString(format) {
-        return this._abstractDateTime.toWrittenDateString(format);
-    }
-    toFlexibleTimeString() {
-        return this._abstractDateTime.toFlexibleTimeString();
-    }
-    toCalendarYear() {
-        return this._abstractDateTime.toCalendarYear();
-    }
-    toCalendarMonth() {
-        return this._abstractDateTime.toCalendarMonth();
-    }
-    toCalendarDay() {
-        return this._abstractDateTime.toCalendarDay();
-    }
-    toHours24() {
-        return this._abstractDateTime.toHours24();
-    }
-    toHours12() {
-        return this._abstractDateTime.toHours12();
-    }
-    toAmPm() {
-        return this._abstractDateTime.toAmPm();
-    }
-    toMinutes() {
-        return this._abstractDateTime.toMinutes();
-    }
-    toSeconds() {
-        return this._abstractDateTime.toSeconds();
-    }
-    toMilliseconds() {
-        return this._abstractDateTime.toMilliseconds();
+    withMonthStart() {
+        const abstractTime = AbstractTime_1.AbstractTime.ofDayStart();
+        const abstractDate = this.abstractDateTime.abstractDate.withChange({
+            calendarDay: 1,
+        });
+        return this.withAbstractDateTime(new AbstractDateTime_1.AbstractDateTime({
+            abstractDate,
+            abstractTime,
+        }));
     }
     toDayOfWeek() {
-        return dayOfWeekOfInstant_1.dayOfWeekOfInstant(this.toInstant(), this.toTimeZone());
-    }
-    toTimeZone() {
-        return this._timeZone;
+        return dayOfWeekOfInstant_1.dayOfWeekOfInstant(this.toInstant(), this.timeZone);
     }
     toInstant() {
         return instantOfLocalDateTime_1.instantOfLocalDateTime(this);
-    }
-    toAbstractDateTime() {
-        return this._abstractDateTime;
     }
 }
 exports.LocalDateTime = LocalDateTime;

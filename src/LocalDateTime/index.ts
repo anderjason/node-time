@@ -1,253 +1,216 @@
 import { localDateTimeOfInstant } from "./_internal/localDateTimeOfInstant";
 import { Instant } from "@anderjason/time";
 import { Duration } from "@anderjason/time";
-import { instantOfLocalDateTime } from "./_internal/instantOfLocalDateTime";
+import { instantGivenLocalDateTime } from "./_internal/instantGivenLocalDateTime";
 import { TimeZone } from "../TimeZone";
-import { dayOfWeekOfInstant } from "./_internal/dayOfWeekOfInstant";
-import {
-  AbstractDateTime,
-  SortableDateStringFormat,
-  SortableTimeStringFormat,
-  SortableDateTimeStringFormat,
-  WrittenDateStringFormat,
-} from "../AbstractDateTime";
+import { weekdayGivenInstant } from "./_internal/weekdayGivenInstant";
+import { AbstractDateTime } from "../AbstractDateTime";
+import { AbstractTime } from "../AbstractTime";
+import { AbstractDate } from "../AbstractDate";
+import { weekdayNameGivenWeekday } from "./_internal/weekdayNameGivenWeekday";
+import { localDateTimeGivenISOString } from "./_internal/localDateTimeGivenISOString";
+
+export type WeekdayStringFormat = "Thursday" | "Thurs" | "Thu" | "Th" | "T";
+export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+export type TimezoneChangeMethod = "replace" | "convert";
+
+export interface LocalDateTimeProps {
+  abstractDateTime: AbstractDateTime;
+  timeZone: TimeZone;
+}
 
 export class LocalDateTime {
-  private _abstractDateTime: AbstractDateTime;
-  private _timeZone: TimeZone;
-
-  static ofDateParts(
-    calendarYear: number,
-    calendarMonth: number,
-    calendarDay: number,
+  static givenTimeToday(
+    abstractTime: AbstractTime,
     timeZone: TimeZone
   ): LocalDateTime {
-    const abstractDateTime = AbstractDateTime.givenDefinition({
-      calendarYear,
-      calendarMonth,
-      calendarDay,
-    });
+    const now = localDateTimeOfInstant(Instant.ofNow(), timeZone);
 
-    return new LocalDateTime(abstractDateTime, timeZone);
-  }
-
-  static ofAbstractDateTime(
-    abstractDateTime: AbstractDateTime,
-    timeZone: TimeZone
-  ): LocalDateTime {
-    return new LocalDateTime(abstractDateTime, timeZone);
-  }
-
-  static ofToday(
-    timeZone: TimeZone,
-    hours24: number,
-    minutes: number,
-    seconds?: number,
-    milliseconds?: number
-  ): LocalDateTime {
-    return localDateTimeOfInstant(Instant.ofNow(), timeZone).withTimeParts(
-      hours24,
-      minutes,
-      seconds,
-      milliseconds
+    return now.withAbstractDateTime(
+      now.abstractDateTime.withAbstractTime(abstractTime)
     );
   }
 
-  static ofBeginningOfToday(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.ofToday(timeZone, 0, 0);
+  static givenISOString(input: string): LocalDateTime {
+    return localDateTimeGivenISOString(input);
   }
 
-  static ofBeginningOfThisWeek(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.ofToday(timeZone, 0, 0).withBeginningOfWeek();
+  static ofTodayStart(timeZone: TimeZone): LocalDateTime {
+    return LocalDateTime.givenTimeToday(AbstractTime.ofDayStart(), timeZone);
+  }
+
+  static ofTodayEnd(timeZone: TimeZone): LocalDateTime {
+    return LocalDateTime.givenTimeToday(AbstractTime.ofDayEnd(), timeZone);
+  }
+
+  static ofWeekStart(timeZone: TimeZone): LocalDateTime {
+    return LocalDateTime.ofTodayStart(timeZone).withWeekStart();
   }
 
   static ofEndOfThisWeek(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.ofToday(timeZone, 0, 0).withEndOfWeek();
-  }
-
-  static ofEndOfToday(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.ofToday(timeZone, 23, 59, 59, 999);
-  }
-
-  static ofInstant(instant: Instant, timeZone: TimeZone): LocalDateTime {
-    return localDateTimeOfInstant(instant, timeZone);
+    return LocalDateTime.ofTodayStart(timeZone).withWeekEnd();
   }
 
   static ofNow(timeZone: TimeZone): LocalDateTime {
     return localDateTimeOfInstant(Instant.ofNow(), timeZone);
   }
 
-  private constructor(abstractDateTime: AbstractDateTime, timeZone: TimeZone) {
-    this._abstractDateTime = abstractDateTime;
-    this._timeZone = timeZone;
+  static givenInstant(instant: Instant, timeZone: TimeZone): LocalDateTime {
+    return localDateTimeOfInstant(instant, timeZone);
   }
 
-  withTimeParts(
-    hours24: number,
-    minutes: number,
-    seconds: number = 0,
-    milliseconds: number = 0
-  ): LocalDateTime {
-    const abstractDateTime = this._abstractDateTime.withTimeParts(
-      hours24,
-      minutes,
-      seconds,
-      milliseconds
+  static isEqual(a: LocalDateTime, b: LocalDateTime): boolean {
+    if (a == null && b == null) {
+      return true;
+    }
+
+    if (a == null || b == null) {
+      return false;
+    }
+
+    return a.isEqual(b);
+  }
+
+  readonly abstractDateTime: AbstractDateTime;
+  readonly timeZone: TimeZone;
+
+  constructor(props: LocalDateTimeProps) {
+    this.abstractDateTime = props.abstractDateTime;
+    this.timeZone = props.timeZone;
+  }
+
+  isEqual(other: LocalDateTime): boolean {
+    if (other == null) {
+      return false;
+    }
+
+    if (!(other instanceof LocalDateTime)) {
+      return false;
+    }
+
+    return (
+      AbstractDateTime.isEqual(this.abstractDateTime, other.abstractDateTime) &&
+      TimeZone.isEqual(this.timeZone, other.timeZone)
     );
-
-    return new LocalDateTime(abstractDateTime, this._timeZone);
   }
 
-  withDateParts(
-    calendarYear: number,
-    calendarMonth: number,
-    calendarDay: number
-  ): LocalDateTime {
-    const abstractDateTime = this._abstractDateTime.withDateParts(
-      calendarYear,
-      calendarMonth,
-      calendarDay
-    );
-
-    return new LocalDateTime(abstractDateTime, this._timeZone);
+  withAbstractDateTime(abstractDateTime: AbstractDateTime): LocalDateTime {
+    return new LocalDateTime({
+      abstractDateTime,
+      timeZone: this.timeZone,
+    });
   }
 
-  withoutMilliseconds(): LocalDateTime {
-    const abstractDateTime = this._abstractDateTime.withoutMilliseconds();
-
-    return new LocalDateTime(abstractDateTime, this._timeZone);
+  withAbstractTime(abstractTime: AbstractTime): LocalDateTime {
+    return new LocalDateTime({
+      abstractDateTime: this.abstractDateTime.withAbstractTime(abstractTime),
+      timeZone: this.timeZone,
+    });
   }
 
-  withoutSeconds(): LocalDateTime {
-    const abstractDateTime = this._abstractDateTime.withoutSeconds();
-
-    return new LocalDateTime(abstractDateTime, this._timeZone);
+  withAbstractDate(abstractDate: AbstractDate): LocalDateTime {
+    return new LocalDateTime({
+      abstractDateTime: this.abstractDateTime.withAbstractDate(abstractDate),
+      timeZone: this.timeZone,
+    });
   }
 
   withAddedDuration(duration: Duration): LocalDateTime {
-    return LocalDateTime.ofInstant(
+    return LocalDateTime.givenInstant(
       this.toInstant().withAddedDuration(duration),
-      this._timeZone
+      this.timeZone
     );
   }
 
-  withBeginningOfDay(): LocalDateTime {
-    return this.withTimeParts(0, 0);
+  withDayStart(): LocalDateTime {
+    return new LocalDateTime({
+      timeZone: this.timeZone,
+      abstractDateTime: this.abstractDateTime.withAbstractTime(
+        AbstractTime.ofDayStart()
+      ),
+    });
   }
 
-  withEndOfDay(): LocalDateTime {
-    return this.withTimeParts(23, 59, 59, 999);
+  withDayEnd(): LocalDateTime {
+    return new LocalDateTime({
+      timeZone: this.timeZone,
+      abstractDateTime: this.abstractDateTime.withAbstractTime(
+        AbstractTime.ofDayEnd()
+      ),
+    });
   }
 
-  withBeginningOfWeek(): LocalDateTime {
-    const beginningOfDay = this.withBeginningOfDay();
+  withWeekStart(): LocalDateTime {
+    const beginningOfDay = this.withDayStart();
 
     return beginningOfDay.withAddedDuration(
-      Duration.givenDays(0 - beginningOfDay.toDayOfWeek())
+      Duration.givenDays(0 - this.toWeekday())
     );
   }
 
-  withEndOfWeek(): LocalDateTime {
-    const endOfDay = this.withEndOfDay();
+  withWeekEnd(): LocalDateTime {
+    const endOfDay = this.withDayEnd();
 
     return endOfDay.withAddedDuration(
-      Duration.givenDays(6 - endOfDay.toDayOfWeek())
+      Duration.givenDays(6 - endOfDay.toWeekday())
     );
   }
 
-  withBeginningOfMonth(): LocalDateTime {
-    return this.withBeginningOfDay().withDateParts(
-      this.toCalendarYear(),
-      this.toCalendarMonth(),
-      1
+  withMonthStart(): LocalDateTime {
+    const abstractTime = AbstractTime.ofDayStart();
+    const abstractDate = this.abstractDateTime.abstractDate.withValues({
+      calendarDay: 1,
+    });
+
+    return this.withAbstractDateTime(
+      new AbstractDateTime({
+        abstractDate,
+        abstractTime,
+      })
     );
   }
 
-  toSortableDateString(format: SortableDateStringFormat): string {
-    return this._abstractDateTime.toSortableDateString(format);
-  }
-
-  toSortableTimeString(format: SortableTimeStringFormat): string {
-    return this._abstractDateTime.toSortableTimeString(format);
-  }
-
-  toSortableDateTimeString(format: SortableDateTimeStringFormat): string {
-    let date: string;
-    let time: string;
-
-    switch (format) {
-      case "2019-12-31 23:59:59":
-        date = this.toSortableDateString("2019-12-31");
-        time = this.toSortableTimeString("23:59:59");
-
-        return `${date} ${time}`;
-      case "20191231 235959":
-        date = this.toSortableDateString("20191231");
-        time = this.toSortableTimeString("235959");
-
-        return `${date} ${time}`;
+  withTimeZone(
+    timeZone: TimeZone,
+    method: TimezoneChangeMethod
+  ): LocalDateTime {
+    switch (method) {
+      case "convert":
+        return LocalDateTime.givenInstant(this.toInstant(), timeZone);
+      case "replace":
+        return new LocalDateTime({
+          abstractDateTime: this.abstractDateTime,
+          timeZone,
+        });
       default:
-        throw new Error("Unsupported date time string format");
+        throw new Error("Unsupported method");
     }
   }
 
-  toWrittenDateString(format: WrittenDateStringFormat): string {
-    return this._abstractDateTime.toWrittenDateString(format);
+  toWeekday(): Weekday {
+    return weekdayGivenInstant(this.toInstant(), this.timeZone);
   }
 
-  toFlexibleTimeString(): string {
-    return this._abstractDateTime.toFlexibleTimeString();
-  }
-
-  toCalendarYear(): number {
-    return this._abstractDateTime.toCalendarYear();
-  }
-
-  toCalendarMonth(): number {
-    return this._abstractDateTime.toCalendarMonth();
-  }
-
-  toCalendarDay(): number {
-    return this._abstractDateTime.toCalendarDay();
-  }
-
-  toHours24(): number {
-    return this._abstractDateTime.toHours24();
-  }
-
-  toHours12(): number {
-    return this._abstractDateTime.toHours12();
-  }
-
-  toAmPm(): "a.m." | "p.m." {
-    return this._abstractDateTime.toAmPm();
-  }
-
-  toMinutes(): number {
-    return this._abstractDateTime.toMinutes();
-  }
-
-  toSeconds(): number {
-    return this._abstractDateTime.toSeconds();
-  }
-
-  toMilliseconds(): number {
-    return this._abstractDateTime.toMilliseconds();
-  }
-
-  toDayOfWeek(): number {
-    return dayOfWeekOfInstant(this.toInstant(), this.toTimeZone());
-  }
-
-  toTimeZone(): TimeZone {
-    return this._timeZone;
+  toWeekdayName(format: WeekdayStringFormat): string {
+    return weekdayNameGivenWeekday(this.toWeekday(), format);
   }
 
   toInstant(): Instant {
-    return instantOfLocalDateTime(this);
+    return instantGivenLocalDateTime(this);
   }
 
-  toAbstractDateTime(): AbstractDateTime {
-    return this._abstractDateTime;
+  toISOString(): string {
+    let utcDateTime: LocalDateTime;
+    if (this.timeZone.ianaName === "UTC") {
+      utcDateTime = this;
+    } else {
+      utcDateTime = this.withTimeZone(TimeZone.ofUTC(), "convert");
+    }
+
+    const { abstractDate, abstractTime } = utcDateTime.abstractDateTime;
+    const dateStr = abstractDate.toString("2020-01-01");
+    const timeStr = abstractTime.toString("00:00:00.000");
+
+    return `${dateStr}T${timeStr}Z`;
   }
 }

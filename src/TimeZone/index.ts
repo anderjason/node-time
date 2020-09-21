@@ -1,12 +1,6 @@
 import { listTimeZones } from "timezone-support";
 
 export class TimeZone {
-  private _ianaName: string;
-
-  static ofIanaName(ianaName: string): TimeZone {
-    return new TimeZone(ianaName);
-  }
-
   static ofUTC(): TimeZone {
     return new TimeZone("UTC");
   }
@@ -19,11 +13,33 @@ export class TimeZone {
     return listTimeZones();
   }
 
-  private constructor(ianaName: string) {
-    this._ianaName = ianaName;
+  static isEqual(a: TimeZone, b: TimeZone): boolean {
+    if (a == null && b == null) {
+      return true;
+    }
+
+    if (a == null || b == null) {
+      return false;
+    }
+
+    return a.isEqual(b);
   }
 
-  toIanaName(): string {
-    return this._ianaName;
+  readonly ianaName: string;
+
+  constructor(ianaName: string) {
+    this.ianaName = ianaName;
+  }
+
+  isEqual(other: TimeZone): boolean {
+    if (other == null) {
+      return false;
+    }
+
+    if (!(other instanceof TimeZone)) {
+      return false;
+    }
+
+    return other.ianaName === this.ianaName;
   }
 }
