@@ -1,25 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractDateTime = void 0;
+const AbstractDate_1 = require("../AbstractDate");
+const AbstractTime_1 = require("../AbstractTime");
 class AbstractDateTime {
     constructor(props) {
         this.abstractDate = props.abstractDate;
         this.abstractTime = props.abstractTime;
     }
-    toSortableString(format) {
-        let dateStr;
-        let timeStr;
+    static isEqual(a, b) {
+        if (a == null && b == null) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.isEqual(b);
+    }
+    isEqual(other) {
+        if (other == null) {
+            return false;
+        }
+        if (!(other instanceof AbstractDateTime)) {
+            return false;
+        }
+        return (AbstractDate_1.AbstractDate.isEqual(this.abstractDate, other.abstractDate) &&
+            AbstractTime_1.AbstractTime.isEqual(this.abstractTime, other.abstractTime));
+    }
+    toString(format, dateFormat, timeFormat) {
+        let dateStr = this.abstractDate.toString(dateFormat);
+        let timeStr = this.abstractTime.toString(timeFormat);
         switch (format) {
-            case "2019-12-31 23:59:59":
-                dateStr = this.abstractDate.toSortableDateString("2019-12-31");
-                timeStr = this.abstractTime.toSortableTimeString("23:59:59");
+            case "date at time":
+                return `${dateStr} at ${timeStr}`;
+            case "time on date":
+                return `${timeStr} on ${dateStr}`;
+            case "date time":
                 return `${dateStr} ${timeStr}`;
-            case "20191231-235959":
-                dateStr = this.abstractDate.toSortableDateString("20191231");
-                timeStr = this.abstractTime.toSortableTimeString("235959");
+            case "date-time":
                 return `${dateStr}-${timeStr}`;
+            case "datetime":
+                return `${dateStr}${timeStr}`;
             default:
-                break;
+                throw new Error("Unsupported format");
         }
     }
     withAbstractDate(abstractDate) {

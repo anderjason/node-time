@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.instantOfLocalDateTime = void 0;
+exports.instantGivenLocalDateTime = void 0;
 const timezone_support_1 = require("timezone-support");
 const time_1 = require("@anderjason/time");
-function instantOfLocalDateTime(localDateTime) {
+function instantGivenLocalDateTime(localDateTime) {
     const { abstractDateTime, timeZone } = localDateTime;
     const tz = timezone_support_1.findTimeZone(timeZone.ianaName);
     const { abstractDate, abstractTime } = abstractDateTime;
@@ -20,5 +20,5 @@ function instantOfLocalDateTime(localDateTime) {
     }, tz);
     return time_1.Instant.givenEpochMilliseconds(epochMilliseconds);
 }
-exports.instantOfLocalDateTime = instantOfLocalDateTime;
-//# sourceMappingURL=instantOfLocalDateTime.js.map
+exports.instantGivenLocalDateTime = instantGivenLocalDateTime;
+//# sourceMappingURL=instantGivenLocalDateTime.js.map

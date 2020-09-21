@@ -158,3 +158,202 @@ Test.define("LocalDateTime throws on an invalid ISO 8601 string", () => {
     LocalDateTime.givenISOString("January 1");
   });
 });
+
+Test.define("LocalDateTime can calculate the beginning of the week", () => {
+  const original = new LocalDateTime({
+    timeZone: TimeZone.ofUTC(),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 4,
+        calendarDay: 29,
+      }),
+      abstractTime: new AbstractTime({
+        hours24: 20,
+        minutes: 15,
+        seconds: 30,
+      }),
+    }),
+  });
+
+  const actual = original.withStartOfWeek();
+
+  const expected = new LocalDateTime({
+    timeZone: TimeZone.ofUTC(),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 4,
+        calendarDay: 26,
+      }),
+      abstractTime: AbstractTime.ofStartOfDay(),
+    }),
+  });
+
+  Test.assert(actual.isEqual(expected));
+});
+
+Test.define("LocalDateTime can calculate the end of the week", () => {
+  const original = new LocalDateTime({
+    timeZone: TimeZone.ofUTC(),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 4,
+        calendarDay: 29,
+      }),
+      abstractTime: new AbstractTime({
+        hours24: 20,
+        minutes: 15,
+        seconds: 30,
+      }),
+    }),
+  });
+
+  const actual = original.withEndOfWeek();
+
+  const expected = new LocalDateTime({
+    timeZone: TimeZone.ofUTC(),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 5,
+        calendarDay: 2,
+      }),
+      abstractTime: AbstractTime.ofEndOfDay(),
+    }),
+  });
+
+  Test.assert(actual.isEqual(expected));
+});
+
+Test.define(
+  "LocalDateTime can calculate the end of the month in February",
+  () => {
+    const original = new LocalDateTime({
+      timeZone: TimeZone.ofUTC(),
+      abstractDateTime: new AbstractDateTime({
+        abstractDate: new AbstractDate({
+          calendarYear: 2020,
+          calendarMonth: 2,
+          calendarDay: 15,
+        }),
+        abstractTime: new AbstractTime({
+          hours24: 20,
+          minutes: 15,
+          seconds: 30,
+        }),
+      }),
+    });
+
+    const actual = original.withEndOfMonth();
+
+    const expected = new LocalDateTime({
+      timeZone: TimeZone.ofUTC(),
+      abstractDateTime: new AbstractDateTime({
+        abstractDate: new AbstractDate({
+          calendarYear: 2020,
+          calendarMonth: 2,
+          calendarDay: 29,
+        }),
+        abstractTime: AbstractTime.ofEndOfDay(),
+      }),
+    });
+
+    Test.assert(actual.isEqual(expected));
+  }
+);
+
+Test.define(
+  "LocalDateTime can calculate the end of the month in December",
+  () => {
+    const original = new LocalDateTime({
+      timeZone: TimeZone.ofUTC(),
+      abstractDateTime: new AbstractDateTime({
+        abstractDate: new AbstractDate({
+          calendarYear: 2020,
+          calendarMonth: 12,
+          calendarDay: 15,
+        }),
+        abstractTime: new AbstractTime({
+          hours24: 20,
+          minutes: 15,
+          seconds: 30,
+        }),
+      }),
+    });
+
+    const actual = original.withEndOfMonth();
+
+    const expected = new LocalDateTime({
+      timeZone: TimeZone.ofUTC(),
+      abstractDateTime: new AbstractDateTime({
+        abstractDate: new AbstractDate({
+          calendarYear: 2020,
+          calendarMonth: 12,
+          calendarDay: 31,
+        }),
+        abstractTime: AbstractTime.ofEndOfDay(),
+      }),
+    });
+
+    Test.assert(actual.isEqual(expected));
+  }
+);
+
+Test.define("LocalDateTime can calculate the end of the year", () => {
+  const original = new LocalDateTime({
+    timeZone: TimeZone.ofUTC(),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 4,
+        calendarDay: 15,
+      }),
+      abstractTime: new AbstractTime({
+        hours24: 20,
+        minutes: 15,
+        seconds: 30,
+      }),
+    }),
+  });
+
+  const actual = original.withEndOfYear();
+
+  const expected = new LocalDateTime({
+    timeZone: TimeZone.ofUTC(),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 12,
+        calendarDay: 31,
+      }),
+      abstractTime: AbstractTime.ofEndOfDay(),
+    }),
+  });
+
+  Test.assert(actual.isEqual(expected));
+});
+
+Test.define("LocalDateTime can get the time zone abbreviation", () => {
+  const original = new LocalDateTime({
+    timeZone: new TimeZone("America/Los_Angeles"),
+    abstractDateTime: new AbstractDateTime({
+      abstractDate: new AbstractDate({
+        calendarYear: 2020,
+        calendarMonth: 4,
+        calendarDay: 15,
+      }),
+      abstractTime: new AbstractTime({
+        hours24: 20,
+        minutes: 15,
+        seconds: 30,
+      }),
+    }),
+  });
+
+  const actual = original.toTimeZoneAbbreviation();
+  const expected = "PDT";
+
+  Test.assert(actual === expected);
+});

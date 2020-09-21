@@ -1,21 +1,37 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractDate = void 0;
-const sortableDateStringGivenDate_1 = require("./_internal/sortableDateStringGivenDate");
-const writtenDateGivenDate_1 = require("./_internal/writtenDateGivenDate");
+const stringGivenAbstractDate_1 = require("./_internal/stringGivenAbstractDate");
 class AbstractDate {
     constructor(props) {
         this.calendarYear = props.calendarYear;
         this.calendarMonth = props.calendarMonth;
         this.calendarDay = props.calendarDay;
     }
-    toSortableDateString(format) {
-        return sortableDateStringGivenDate_1.sortableDateStringGivenDate(this, format);
+    static isEqual(a, b) {
+        if (a == null && b == null) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.isEqual(b);
     }
-    toWrittenDateString(format) {
-        return writtenDateGivenDate_1.writtenDateGivenDate(this, format);
+    isEqual(other) {
+        if (other == null) {
+            return false;
+        }
+        if (!(other instanceof AbstractDate)) {
+            return false;
+        }
+        return (other.calendarYear === this.calendarYear &&
+            other.calendarMonth === this.calendarMonth &&
+            other.calendarDay === this.calendarDay);
     }
-    withChange(change) {
+    toString(format) {
+        return stringGivenAbstractDate_1.stringGivenAbstractDate(this, format);
+    }
+    withValues(change) {
         return new AbstractDate(Object.assign({ calendarYear: this.calendarYear, calendarMonth: this.calendarMonth, calendarDay: this.calendarDay }, change));
     }
 }

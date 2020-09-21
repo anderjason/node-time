@@ -1,8 +1,9 @@
 export declare class TimeZone {
-    static givenIanaName(ianaName: string): TimeZone;
     static ofUTC(): TimeZone;
     static ofThisMachine(): TimeZone;
     static toIanaNames(): string[];
+    static isEqual(a: TimeZone, b: TimeZone): boolean;
     readonly ianaName: string;
-    private constructor();
+    constructor(ianaName: string);
+    isEqual(other: TimeZone): boolean;
 }

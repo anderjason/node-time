@@ -1,17 +1,17 @@
-export declare type WrittenDateStringFormat = "January 1, 1980";
-export declare type SortableDateStringFormat = "2019-12-31" | "20191231" | "191231";
-export declare type AbstractDateTimeStringFormat = "sortableDate" | "writtenDate" | "flexibleTime";
+export declare type CalendarMonthFormat = "January" | "Jan";
+export declare type DateStringFormat = "January 1, 2020" | "January 1" | "Jan 1 2020" | "Jan 01 2020" | "Jan 1" | "Jan 01" | "2020-01-01" | "20200101";
 export interface AbstractDateProps {
     calendarYear: number;
     calendarMonth: number;
     calendarDay: number;
 }
 export declare class AbstractDate {
+    static isEqual(a: AbstractDate, b: AbstractDate): boolean;
     readonly calendarYear: number;
     readonly calendarMonth: number;
     readonly calendarDay: number;
     constructor(props: AbstractDateProps);
-    toSortableDateString(format: SortableDateStringFormat): string;
-    toWrittenDateString(format: WrittenDateStringFormat): string;
-    withChange(change: Partial<AbstractDateProps>): AbstractDate;
+    isEqual(other: AbstractDate): boolean;
+    toString(format: DateStringFormat): string;
+    withValues(change: Partial<AbstractDateProps>): AbstractDate;
 }

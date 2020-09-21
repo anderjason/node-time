@@ -6,9 +6,6 @@ class TimeZone {
     constructor(ianaName) {
         this.ianaName = ianaName;
     }
-    static givenIanaName(ianaName) {
-        return new TimeZone(ianaName);
-    }
     static ofUTC() {
         return new TimeZone("UTC");
     }
@@ -17,6 +14,24 @@ class TimeZone {
     }
     static toIanaNames() {
         return timezone_support_1.listTimeZones();
+    }
+    static isEqual(a, b) {
+        if (a == null && b == null) {
+            return true;
+        }
+        if (a == null || b == null) {
+            return false;
+        }
+        return a.isEqual(b);
+    }
+    isEqual(other) {
+        if (other == null) {
+            return false;
+        }
+        if (!(other instanceof TimeZone)) {
+            return false;
+        }
+        return other.ianaName === this.ianaName;
     }
 }
 exports.TimeZone = TimeZone;

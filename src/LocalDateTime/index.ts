@@ -9,6 +9,7 @@ import { AbstractTime } from "../AbstractTime";
 import { AbstractDate } from "../AbstractDate";
 import { weekdayNameGivenWeekday } from "./_internal/weekdayNameGivenWeekday";
 import { localDateTimeGivenISOString } from "./_internal/localDateTimeGivenISOString";
+import { timeZoneAbbreviationGivenLocalDateTime } from "./_internal/timeZoneAbbreviationGivenLocalDateTime";
 
 export type WeekdayStringFormat = "Thursday" | "Thurs" | "Thu" | "Th" | "T";
 export type Weekday = 0 | 1 | 2 | 3 | 4 | 5 | 6;
@@ -33,22 +34,6 @@ export class LocalDateTime {
 
   static givenISOString(input: string): LocalDateTime {
     return localDateTimeGivenISOString(input);
-  }
-
-  static ofTodayStart(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.givenTimeToday(AbstractTime.ofDayStart(), timeZone);
-  }
-
-  static ofTodayEnd(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.givenTimeToday(AbstractTime.ofDayEnd(), timeZone);
-  }
-
-  static ofWeekStart(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.ofTodayStart(timeZone).withWeekStart();
-  }
-
-  static ofEndOfThisWeek(timeZone: TimeZone): LocalDateTime {
-    return LocalDateTime.ofTodayStart(timeZone).withWeekEnd();
   }
 
   static ofNow(timeZone: TimeZone): LocalDateTime {
@@ -77,6 +62,14 @@ export class LocalDateTime {
   constructor(props: LocalDateTimeProps) {
     this.abstractDateTime = props.abstractDateTime;
     this.timeZone = props.timeZone;
+  }
+
+  get abstractDate(): AbstractDate {
+    return this.abstractDateTime.abstractDate;
+  }
+
+  get abstractTime(): AbstractTime {
+    return this.abstractDateTime.abstractTime;
   }
 
   isEqual(other: LocalDateTime): boolean {
@@ -122,43 +115,43 @@ export class LocalDateTime {
     );
   }
 
-  withDayStart(): LocalDateTime {
+  withStartOfDay(): LocalDateTime {
     return new LocalDateTime({
       timeZone: this.timeZone,
       abstractDateTime: this.abstractDateTime.withAbstractTime(
-        AbstractTime.ofDayStart()
+        AbstractTime.ofStartOfDay()
       ),
     });
   }
 
-  withDayEnd(): LocalDateTime {
+  withEndOfDay(): LocalDateTime {
     return new LocalDateTime({
       timeZone: this.timeZone,
       abstractDateTime: this.abstractDateTime.withAbstractTime(
-        AbstractTime.ofDayEnd()
+        AbstractTime.ofEndOfDay()
       ),
     });
   }
 
-  withWeekStart(): LocalDateTime {
-    const beginningOfDay = this.withDayStart();
+  withStartOfWeek(): LocalDateTime {
+    const beginningOfDay = this.withStartOfDay();
 
     return beginningOfDay.withAddedDuration(
       Duration.givenDays(0 - this.toWeekday())
     );
   }
 
-  withWeekEnd(): LocalDateTime {
-    const endOfDay = this.withDayEnd();
+  withEndOfWeek(): LocalDateTime {
+    const endOfDay = this.withEndOfDay();
 
     return endOfDay.withAddedDuration(
       Duration.givenDays(6 - endOfDay.toWeekday())
     );
   }
 
-  withMonthStart(): LocalDateTime {
-    const abstractTime = AbstractTime.ofDayStart();
-    const abstractDate = this.abstractDateTime.abstractDate.withValues({
+  withStartOfMonth(): LocalDateTime {
+    const abstractTime = AbstractTime.ofStartOfDay();
+    const abstractDate = this.abstractDate.withValues({
       calendarDay: 1,
     });
 
@@ -167,6 +160,62 @@ export class LocalDateTime {
         abstractDate,
         abstractTime,
       })
+    );
+  }
+
+  withEndOfMonth(): LocalDateTime {
+    let calendarYear = this.abstractDate.calendarYear;
+    let calendarMonth = this.abstractDate.calendarMonth + 1;
+
+    if (calendarMonth > 12) {
+      calendarMonth = 1;
+      calendarYear += 1;
+    }
+
+    const beginningOfNextMonth = this.withAbstractDateTime(
+      new AbstractDateTime({
+        abstractDate: this.abstractDate.withValues({
+          calendarYear,
+          calendarMonth,
+          calendarDay: 1,
+        }),
+        abstractTime: AbstractTime.ofStartOfDay(),
+      })
+    );
+
+    return beginningOfNextMonth.withAddedDuration(
+      Duration.givenMilliseconds(-1)
+    );
+  }
+
+  withStartOfYear(): LocalDateTime {
+    return this.withAbstractDateTime(
+      new AbstractDateTime({
+        abstractDate: this.abstractDateTime.abstractDate.withValues({
+          calendarDay: 1,
+          calendarMonth: 1,
+        }),
+        abstractTime: AbstractTime.ofStartOfDay(),
+      })
+    );
+  }
+
+  withEndOfYear(): LocalDateTime {
+    let calendarYear = this.abstractDate.calendarYear + 1;
+
+    const beginningOfNextYear = this.withAbstractDateTime(
+      new AbstractDateTime({
+        abstractDate: this.abstractDate.withValues({
+          calendarYear,
+          calendarMonth: 1,
+          calendarDay: 1,
+        }),
+        abstractTime: AbstractTime.ofStartOfDay(),
+      })
+    );
+
+    return beginningOfNextYear.withAddedDuration(
+      Duration.givenMilliseconds(-1)
     );
   }
 
@@ -197,6 +246,10 @@ export class LocalDateTime {
 
   toInstant(): Instant {
     return instantGivenLocalDateTime(this);
+  }
+
+  toTimeZoneAbbreviation(): string {
+    return timeZoneAbbreviationGivenLocalDateTime(this);
   }
 
   toISOString(): string {

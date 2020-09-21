@@ -15,12 +15,19 @@ const names = [
     "November",
     "December",
 ];
-function nameGivenCalendarMonth(calendarMonth) {
+function nameGivenCalendarMonth(calendarMonth, format) {
     const index = calendarMonth - 1;
     if (index < 0 || index > 11) {
         throw new Error("Invalid calendar month");
     }
-    return names[index];
+    switch (format) {
+        case "January":
+            return names[index];
+        case "Jan":
+            return names[index].slice(0, 3);
+        default:
+            throw new Error("Unsupported format");
+    }
 }
 exports.nameGivenCalendarMonth = nameGivenCalendarMonth;
 //# sourceMappingURL=nameGivenCalendarMonth.js.map

@@ -24,7 +24,7 @@ export interface AbstractTimeProps {
 }
 
 export class AbstractTime {
-  static ofDayStart(): AbstractTime {
+  static ofStartOfDay(): AbstractTime {
     return new AbstractTime({
       hours24: 0,
       minutes: 0,
@@ -33,7 +33,7 @@ export class AbstractTime {
     });
   }
 
-  static ofDayEnd(): AbstractTime {
+  static ofEndOfDay(): AbstractTime {
     return new AbstractTime({
       hours24: 23,
       minutes: 59,
