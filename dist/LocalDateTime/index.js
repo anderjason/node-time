@@ -18,17 +18,17 @@ class LocalDateTime {
         this.timeZone = props.timeZone;
     }
     static givenTimeToday(abstractTime, timeZone) {
-        const now = localDateTimeOfInstant_1.localDateTimeOfInstant(time_1.Instant.ofNow(), timeZone);
+        const now = (0, localDateTimeOfInstant_1.localDateTimeOfInstant)(time_1.Instant.ofNow(), timeZone);
         return now.withAbstractDateTime(now.abstractDateTime.withAbstractTime(abstractTime));
     }
     static givenISOString(input) {
-        return localDateTimeGivenISOString_1.localDateTimeGivenISOString(input);
+        return (0, localDateTimeGivenISOString_1.localDateTimeGivenISOString)(input);
     }
     static ofNow(timeZone) {
-        return localDateTimeOfInstant_1.localDateTimeOfInstant(time_1.Instant.ofNow(), timeZone);
+        return (0, localDateTimeOfInstant_1.localDateTimeOfInstant)(time_1.Instant.ofNow(), timeZone);
     }
     static givenInstant(instant, timeZone) {
-        return localDateTimeOfInstant_1.localDateTimeOfInstant(instant, timeZone);
+        return (0, localDateTimeOfInstant_1.localDateTimeOfInstant)(instant, timeZone);
     }
     static isEqual(a, b) {
         if (a == null && b == null) {
@@ -158,16 +158,16 @@ class LocalDateTime {
         }
     }
     toWeekday() {
-        return weekdayGivenInstant_1.weekdayGivenInstant(this.toInstant(), this.timeZone);
+        return (0, weekdayGivenInstant_1.weekdayGivenInstant)(this.toInstant(), this.timeZone);
     }
     toWeekdayName(format) {
-        return weekdayNameGivenWeekday_1.weekdayNameGivenWeekday(this.toWeekday(), format);
+        return (0, weekdayNameGivenWeekday_1.weekdayNameGivenWeekday)(this.toWeekday(), format);
     }
     toInstant() {
-        return instantGivenLocalDateTime_1.instantGivenLocalDateTime(this);
+        return (0, instantGivenLocalDateTime_1.instantGivenLocalDateTime)(this);
     }
     toTimeZoneAbbreviation() {
-        return timeZoneAbbreviationGivenLocalDateTime_1.timeZoneAbbreviationGivenLocalDateTime(this);
+        return (0, timeZoneAbbreviationGivenLocalDateTime_1.timeZoneAbbreviationGivenLocalDateTime)(this);
     }
     toISOString() {
         let utcDateTime;

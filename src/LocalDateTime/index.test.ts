@@ -44,7 +44,7 @@ Test.define("LocalDateTime can convert to a different time zone", () => {
     }),
   });
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual is equal to expected");
 });
 
 Test.define(
@@ -76,7 +76,7 @@ Test.define(
       abstractDateTime: localDateTime.abstractDateTime,
     });
 
-    Test.assert(actual.isEqual(expected));
+    Test.assert(actual.isEqual(expected), "actual is equal to expected");
   }
 );
 
@@ -101,7 +101,7 @@ Test.define("LocalDateTime can convert to an ISO 8601 string", () => {
 
   const actual = localDateTime.toISOString();
 
-  Test.assert(actual === "2020-04-15T22:15:30.000Z");
+  Test.assert(actual === "2020-04-15T22:15:30.000Z", "actual is equal to expected");
 });
 
 Test.define("LocalDateTime can be created from an ISO 8601 string", () => {
@@ -123,7 +123,7 @@ Test.define("LocalDateTime can be created from an ISO 8601 string", () => {
     }),
   });
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual is equal to expected");
 });
 
 Test.define(
@@ -149,14 +149,14 @@ Test.define(
       }),
     });
 
-    Test.assert(actual.isEqual(expected));
+    Test.assert(actual.isEqual(expected), "actual is equal to expected");
   }
 );
 
 Test.define("LocalDateTime throws on an invalid ISO 8601 string", () => {
   Test.assertThrows(() => {
     LocalDateTime.givenISOString("January 1");
-  });
+  }, "Should throw");
 });
 
 Test.define("LocalDateTime can calculate the beginning of the week", () => {
@@ -190,7 +190,7 @@ Test.define("LocalDateTime can calculate the beginning of the week", () => {
     }),
   });
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual is equal to expected");
 });
 
 Test.define("LocalDateTime can calculate the end of the week", () => {
@@ -224,7 +224,7 @@ Test.define("LocalDateTime can calculate the end of the week", () => {
     }),
   });
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual is equal to expected");
 });
 
 Test.define(
@@ -260,7 +260,7 @@ Test.define(
       }),
     });
 
-    Test.assert(actual.isEqual(expected));
+    Test.assert(actual.isEqual(expected), "actual is equal to expected");
   }
 );
 
@@ -297,7 +297,7 @@ Test.define(
       }),
     });
 
-    Test.assert(actual.isEqual(expected));
+    Test.assert(actual.isEqual(expected), "actual is equal to expected");
   }
 );
 
@@ -332,7 +332,7 @@ Test.define("LocalDateTime can calculate the end of the year", () => {
     }),
   });
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual is equal to expected");
 });
 
 Test.define("LocalDateTime can get the time zone abbreviation", () => {
@@ -355,5 +355,5 @@ Test.define("LocalDateTime can get the time zone abbreviation", () => {
   const actual = original.toTimeZoneAbbreviation();
   const expected = "PDT";
 
-  Test.assert(actual === expected);
+  Test.assert(actual === expected, "actual is equal to expected");
 });

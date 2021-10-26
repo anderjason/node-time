@@ -28,5 +28,5 @@ Test.define("instantGivenLocalDateTime returns the expected results", () => {
   const actual = instantGivenLocalDateTime(localDateTime);
   const expected = Instant.givenEpochMilliseconds(1586988930000);
 
-  Test.assert(actual.isEqual(expected));
+  Test.assert(actual.isEqual(expected), "actual should equal expected");
 });

@@ -7,8 +7,8 @@ const AbstractDateTime_1 = require("../../AbstractDateTime");
 const AbstractDate_1 = require("../../AbstractDate");
 const AbstractTime_1 = require("../../AbstractTime");
 function localDateTimeOfInstant(instant, timeZone) {
-    const tz = timezone_support_1.findTimeZone(timeZone.ianaName);
-    const result = timezone_support_1.getZonedTime(new Date(instant.toEpochMilliseconds()), tz);
+    const tz = (0, timezone_support_1.findTimeZone)(timeZone.ianaName);
+    const result = (0, timezone_support_1.getZonedTime)(new Date(instant.toEpochMilliseconds()), tz);
     const abstractDateTime = new AbstractDateTime_1.AbstractDateTime({
         abstractDate: new AbstractDate_1.AbstractDate({
             calendarYear: result.year,

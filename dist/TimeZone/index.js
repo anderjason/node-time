@@ -13,7 +13,7 @@ class TimeZone {
         return new TimeZone(Intl.DateTimeFormat().resolvedOptions().timeZone);
     }
     static toIanaNames() {
-        return timezone_support_1.listTimeZones();
+        return (0, timezone_support_1.listTimeZones)();
     }
     static isEqual(a, b) {
         if (a == null && b == null) {

@@ -10,5 +10,5 @@ Test.define("weekdayGivenInstant returns the expected result", () => {
   const actual = weekdayGivenInstant(instant, timeZone);
   const expected = 2; // Tuesday
 
-  Test.assert(actual === expected);
+  Test.assert(actual === expected, "actual should equal expected");
 });

@@ -10,17 +10,18 @@ function testString(
   milliseconds: number,
   expected: string
 ): void {
+  const actual = stringGivenAbstractTime(
+    new AbstractTime({
+      hours24,
+      minutes,
+      seconds,
+      milliseconds,
+    }),
+    format
+  );
+  
   Test.assert(
-    expected ===
-      stringGivenAbstractTime(
-        new AbstractTime({
-          hours24,
-          minutes,
-          seconds,
-          milliseconds,
-        }),
-        format
-      )
+    expected === actual, actual
   );
 }
 

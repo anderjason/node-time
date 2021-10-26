@@ -29,7 +29,7 @@ class AbstractDate {
             other.calendarDay === this.calendarDay);
     }
     toString(format) {
-        return stringGivenAbstractDate_1.stringGivenAbstractDate(this, format);
+        return (0, stringGivenAbstractDate_1.stringGivenAbstractDate)(this, format);
     }
     withValues(change) {
         return new AbstractDate(Object.assign({ calendarYear: this.calendarYear, calendarMonth: this.calendarMonth, calendarDay: this.calendarDay }, change));

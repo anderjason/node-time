@@ -14,17 +14,17 @@ function stringGivenAbstractDate(date, format) {
     const padDay = stringWithPaddedZeros(date.calendarDay, 2);
     switch (format) {
         case "January 1, 2020":
-            return `${nameGivenCalendarMonth_1.nameGivenCalendarMonth(date.calendarMonth, "January")} ${date.calendarDay}, ${date.calendarYear}`;
+            return `${(0, nameGivenCalendarMonth_1.nameGivenCalendarMonth)(date.calendarMonth, "January")} ${date.calendarDay}, ${date.calendarYear}`;
         case "January 1":
-            return `${nameGivenCalendarMonth_1.nameGivenCalendarMonth(date.calendarMonth, "January")} ${date.calendarDay}`;
+            return `${(0, nameGivenCalendarMonth_1.nameGivenCalendarMonth)(date.calendarMonth, "January")} ${date.calendarDay}`;
         case "Jan 1 2020":
-            return `${nameGivenCalendarMonth_1.nameGivenCalendarMonth(date.calendarMonth, "Jan")} ${date.calendarDay} ${date.calendarYear}`;
+            return `${(0, nameGivenCalendarMonth_1.nameGivenCalendarMonth)(date.calendarMonth, "Jan")} ${date.calendarDay} ${date.calendarYear}`;
         case "Jan 01 2020":
-            return `${nameGivenCalendarMonth_1.nameGivenCalendarMonth(date.calendarMonth, "Jan")} ${padDay} ${date.calendarYear}`;
+            return `${(0, nameGivenCalendarMonth_1.nameGivenCalendarMonth)(date.calendarMonth, "Jan")} ${padDay} ${date.calendarYear}`;
         case "Jan 1":
-            return `${nameGivenCalendarMonth_1.nameGivenCalendarMonth(date.calendarMonth, "Jan")} ${date.calendarDay}`;
+            return `${(0, nameGivenCalendarMonth_1.nameGivenCalendarMonth)(date.calendarMonth, "Jan")} ${date.calendarDay}`;
         case "Jan 01":
-            return `${nameGivenCalendarMonth_1.nameGivenCalendarMonth(date.calendarMonth, "Jan")} ${padDay}`;
+            return `${(0, nameGivenCalendarMonth_1.nameGivenCalendarMonth)(date.calendarMonth, "Jan")} ${padDay}`;
         case "2020-01-01":
             return `${year}-${padMonth}-${padDay}`;
         case "20200101":

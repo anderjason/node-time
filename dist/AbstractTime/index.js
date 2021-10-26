@@ -57,10 +57,10 @@ class AbstractTime {
             other.milliseconds === this.milliseconds);
     }
     toString(format) {
-        return stringGivenAbstractTime_1.stringGivenAbstractTime(this, format);
+        return (0, stringGivenAbstractTime_1.stringGivenAbstractTime)(this, format);
     }
     toWrittenTimeString() {
-        return writtenTimeStringGivenAbstractTime_1.writtenTimeStringGivenAbstractTime(this);
+        return (0, writtenTimeStringGivenAbstractTime_1.writtenTimeStringGivenAbstractTime)(this);
     }
     withValues(change) {
         return new AbstractTime(Object.assign({ hours24: this.hours24, minutes: this.minutes, seconds: this.seconds, milliseconds: this.milliseconds }, change));

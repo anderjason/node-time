@@ -12,11 +12,11 @@ Test.define("localDateTimeOfInstant returns the expected result", () => {
   const { calendarYear, calendarMonth, calendarDay } = abstractDate;
   const { hours24, minutes, seconds } = abstractTime;
 
-  Test.assert(calendarYear === 2020);
-  Test.assert(calendarMonth === 9);
-  Test.assert(calendarDay === 20);
+  Test.assert(calendarYear === 2020, "calendarYear is 2020");
+  Test.assert(calendarMonth === 9, "calendarMonth is 9");
+  Test.assert(calendarDay === 20, "calendarDay is 20");
 
-  Test.assert(hours24 === 20);
-  Test.assert(minutes === 33);
-  Test.assert(seconds === 26);
+  Test.assert(hours24 === 20, "hours24 is 20");
+  Test.assert(minutes === 33, "minutes is 33");
+  Test.assert(seconds === 26, "seconds is 26");
 });
